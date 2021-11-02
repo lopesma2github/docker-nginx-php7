@@ -1,0 +1,37 @@
+version: "3.5"
+services:
+
+  postgres_dev:
+    image: postgres:13.3
+    container_name: postgres_dev
+    environment:
+      POSTGRES_USER: fuerza
+      POSTGRES_PASSWORD: f&HUW4xSyedR
+      POSTGRES_DB: postgres 
+    volumes:
+      - /databases/pgdata-dev:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "5433:5432"
+    networks:
+      infrastructure-design_fuerza-homolog:
+        ipv4_address: 172.28.5.95
+
+  pgadmin_dev:
+    image: dpage/pgadmin4 
+    container_name: pgadmin4_dev
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "devops@fuerzastudio.com.br"
+      PGADMIN_DEFAULT_PASSWORD: "f&HUW4xSyedR"
+    volumes:
+      - /databases/pgdadmin:/var/lib/postgesql/data
+    restart: always
+    ports:
+      - "5050:80"
+    networks:
+      infrastructure-design_fuerza-homolog:
+        ipv4_address: 17.28.5.93 
+
+networks: 
+  infrastructure-design_fuerza-homolog:
+    external: true
