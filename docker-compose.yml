@@ -12,14 +12,14 @@ services:
       - ./nginx:/etc/nginx
       - ./cache:/var/run/nginx-cache
       - /var/www:/var/www
-      - /data/letsencrypt:/data/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
       - /etc/letsencrypt:/etc/letsencrypt
     networks: 
       dev:
         ipv4_address: 171.28.5.10
   server-database:
     image: mariadb:10.5.9
-    container_name: mariadb
+    container_name: serverdb
     restart: always
     volumes:
       - ./data:/var/lib/mysql
@@ -33,37 +33,6 @@ services:
     networks: 
       dev:
         ipv4_address: 171.28.5.11
-
-  postgres:
-    image: postgres:13.3
-    container_name: postgres_dev
-    environment:
-      POSTGRES_USER: fuerza
-      POSTGRES_PASSWORD: f&HUW4xSyedR
-      POSTGRES_DB: postgres 
-    volumes:
-      - ./databases/pgdata:/var/lib/postgresql/data
-    restart: always
-    ports:
-      - "5433:5432"
-    networks:
-      dev:
-        ipv4_address: 171.28.5.12
-
-  pgadmin-compose:
-    image: dpage/pgadmin4 
-    container_name: pgadmin4 
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "lopesma2@gmail.com"
-      PGADMIN_DEFAULT_PASSWORD: "admin"
-    volumes:
-      - ./databases/pgdadmin:/var/lib/postgresql/data
-    restart: always
-    ports:
-      - "8081:80"
-    networks:
-      dev:
-        ipv4_address: 171.28.5.13 
 
 networks: 
   dev:
