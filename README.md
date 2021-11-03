@@ -1,8 +1,4 @@
-# Fuerza Studio WebServer
-[![N|Solid](https://www.fuerzastudio.com.br/wp-content/themes/fuerza/resources/img/logo.png)](https://www.fuerzastudio.com.br/)
-
-
-## NGINX + PHP + MariaDB + PhpmyAdmin (com Docker container)
+# NGINX + PHP + MariaDB + PhpmyAdmin (com Docker container)
 
 The project is a webserver based on php using nginx, running in a docker instance with our image.
 
