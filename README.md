@@ -63,7 +63,7 @@ The Directory `nginx/common` have all config files for Nginx
 | File | About |
 | ------ | ------ |
 | acl.conf | Restricting Access to Proxied TCP Resources. |
-| locations.conf | Define application location and access settings. | 
+| locations.conf | Define application location and access settings and ACME Cert | 
 | php.conf | PHP upstream file  |
 | security.conf | Wordpress security file |
 | webp.conf | Settings file to allow changing the image format to WEBP |
@@ -91,8 +91,8 @@ server {
   listen [::]:80;
   server_name example.com;
 
-  set $base /var/www/example.com;
-	root $base/htdocs;
+  set $base /var/www/html;
+	root $base/app;
 
   index index.php index.html index.htm;
 
@@ -150,14 +150,15 @@ server {
   
   server_name example.com;
 
-  set $base /var/www/example.com;
-	root $base/htdocs;
+  set $base /var/www/html;
+	root $base/app;
 
   index index.php index.html index.htm;
 
   include common/wpfc-php.conf; #Cache FastCGI
   include common/locations.conf;
   include common/wpcommon.conf;  
+  include common/ssl.conf;  #Ativa o SSL no Nginx com o certificado
 }
 ```
 
@@ -170,17 +171,6 @@ $ crontab -e
 ```
 
 ```sh
-0 0 */15 * * docker-compose -f /root/infra-design/docker-compose-ssl.yml up && docker kill -s HUP server >/dev/null 2>&1
+0 0 */15 * * docker-compose -f /root/docker-nginx-php7/docker-compose-ssl.yml up && docker kill -s HUP server >/dev/null 2>&1
 ```
 
-
-
-## About me 
-[![Github Badge](https://img.shields.io/badge/-Github-000?style=flat-square&logo=Github&logoColor=white&link=LINK_GIT)](LINK_GIT)
-
-[![Linkedin Badge](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white&link= LINK_LINKEDIN)]( LINK_LINKEDIN)
-
-
-
-
-Licença
