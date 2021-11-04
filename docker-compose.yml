@@ -43,9 +43,9 @@ services:
       - UPLOAD_LIMIT=20480000K
     restart: always
     links:
-      - serverdb
+      - server-database
     depends_on:
-      - serverdb
+      - server-database
     volumes:
       - /sessions
     networks:
