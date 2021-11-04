@@ -42,6 +42,9 @@ services:
       - PMA_HOSTS=171.28.5.11
       - UPLOAD_LIMIT=20480000K
     restart: always
+    ports:
+      - "8081:80"
+    
     links:
       - server-database
     depends_on:
