@@ -1,7 +1,5 @@
 # NGINX + PHP + MariaDB + PhpmyAdmin (com Docker container)
 
-The project is a webserver based on php using nginx, running in a docker instance with our image.
-
 Este projeto tem o objetivo de configurar um Webserver com Nginx, MariaDB e PhpmyAdmin utilizando 3 containeres Docker:
 
 + 1º - Container Docker com uma imagem customizada do Debian Buster.
@@ -112,9 +110,9 @@ The directory `php` contains the archieve `php.ini` for change PHP configuration
 ## Running
 
 ```sh
-$ cd /path/docker-nginx-php7 && docker-compose up -d --build
+$ cd /path/docker-nginx-php7 && docker-compose up -d
 ```
-* Container named: `server`.
+* Container named: `webserver`.
 
 > Note: Verify the deployment by navigating to your server address in
 your preferred browser.

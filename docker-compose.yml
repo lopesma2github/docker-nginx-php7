@@ -34,6 +34,24 @@ services:
       dev:
         ipv4_address: 171.28.5.11
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.0.2
+    container_name: phpmyadmin
+    hostname: phpmyadmin
+    environment:
+      - PMA_HOSTS=171.28.5.11
+      - UPLOAD_LIMIT=20480000K
+    restart: always
+    links:
+      - serverdb
+    depends_on:
+      - serverdb
+    volumes:
+      - /sessions
+    networks:
+      dev:
+        ipv4_address: 171.28.5.12
+
 networks: 
   dev:
     driver: bridge
