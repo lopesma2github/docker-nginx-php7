@@ -84,7 +84,7 @@ The Directory `nginx/conf.d` configuration, performance and security files for t
 
 O diretório `nginx/sites-enabled` contém os arquivos de configuração do virtual host:
 
-`example.com`
+`defualt.conf`
 ```conf
 server {
     listen   80; ## listen for ipv4; this line is default and implied
