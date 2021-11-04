@@ -151,12 +151,18 @@ server {
 
 }
 ```
-- ##### PHP
+### PHP
 The directory `php` contains the archieve `php.ini` for change PHP configuration.
 
 
-## Running
+## Crie os diretótios para o projeto
 
+```sh
+$ mkdir /var/www/html
+
+$ mkdir /var/lib/www/html/app
+```
+## Running
 ```sh
 $ cd /path/docker-nginx-php7 && docker-compose up -d
 ```
