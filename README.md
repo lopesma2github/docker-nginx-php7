@@ -82,23 +82,76 @@ The Directory `nginx/conf.d` configuration, performance and security files for t
 ...
 - #### docker-nginx-php7/nginx/sites-enabled/
 
-The directory `nginx/sites-enabled`  have all Settings files for sites, where define the root path, includes etc. For include new sites on server, please use the pattern below:
+O diretório `nginx/sites-enabled` contém os arquivos de configuração do virtual host:
 
 `example.com`
 ```conf
 server {
-  listen 80;
-  listen [::]:80;
-  server_name example.com;
+    listen   80; ## listen for ipv4; this line is default and implied
+    listen   [::]:80 default ipv6only=on; ## listen for ipv6
 
-  set $base /var/www/html;
-	root $base/app;
+    root /var/www/html;
+    index index.php index.html index.htm index.nginx-debian.html;
 
-  index index.php index.html index.htm;
+    # Make site accessible from http://localhost/
+    server_name _;
 
-  include common/wpfc-php.conf; #Cache FastCGI
-  include common/locations.conf;
-  include common/wpcommon.conf;  
+    # Disable sendfile as per https://docs.vagrantup.com/v2/synced-folders/virtualbox.html
+    sendfile off;
+
+    # Security - Hide nginx version number in error pages and Server header
+    server_tokens off;
+
+    # Add stdout logging
+    error_log /dev/stdout info;
+    access_log /dev/stdout;
+
+    location / {
+        # First attempt to serve request as file, then
+        # as directory, then fall back to index.html
+        try_files $uri $uri/ =404;
+    }
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /var/www/html;
+    }
+
+    # pass the PHP scripts to FastCGI server listening on socket
+    #
+    #include common/acl.conf;
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+        location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml)$ {
+                expires           5d;
+        }
+
+    # deny access to . files, for security
+    #
+    location ~ /\. {
+            log_not_found off;
+            deny all;
+    }
+
+    location = /favicon.ico {
+    return 204;
+    access_log     off;
+    log_not_found  off;
+    }
+
+    include common/locations.conf;
+    #include common/file_configuration.conf;
+
 }
 ```
 
@@ -123,44 +176,108 @@ your preferred browser.
 
 ## Configure SSL
 
-Execute:
+Antes de executar o container abaixo, certifique-se de editar do virtual host e adicionar o _include common/ssl.conf;_ no final do arquivo.
+
+
+Edit:
+
+`nginx/sites-enabled/default.conf`
+
+```
+server {
+    listen   80; ## listen for ipv4; this line is default and implied
+    listen   [::]:80 default ipv6only=on; ## listen for ipv6
+
+    root /var/www/html;
+    index index.php index.html index.htm index.nginx-debian.html;
+
+    # Make site accessible from http://localhost/
+    server_name _;
+
+    # Disable sendfile as per https://docs.vagrantup.com/v2/synced-folders/virtualbox.html
+    sendfile off;
+
+    # Security - Hide nginx version number in error pages and Server header
+    server_tokens off;
+
+    # Add stdout logging
+    error_log /dev/stdout info;
+    access_log /dev/stdout;
+
+    location / {
+        # First attempt to serve request as file, then
+        # as directory, then fall back to index.html
+        try_files $uri $uri/ =404;
+    }
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /var/www/html;
+    }
+
+    # pass the PHP scripts to FastCGI server listening on socket
+    #
+    #include common/acl.conf;
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+        location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml)$ {
+                expires           5d;
+        }
+
+    # deny access to . files, for security
+    #
+    location ~ /\. {
+            log_not_found off;
+            deny all;
+    }
+
+    location = /favicon.ico {
+    return 204;
+    access_log     off;
+    log_not_found  off;
+    }
+
+    include common/locations.conf;
+    include common/ssl.conf; ## Adiciona HTTPS e SSL ao Nginx
+    #include common/file_configuration.conf;
+
+}
+```
+
+
+
+
+
+O arquivo nginx/common/ssl.conf
+
+```ssl-conf
+
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+
+  ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem; 
+
+```
+
+
+Então execute:
 
 ```sh
 docker-compose -f docker-compose-ssl.yml up
 ```
 
-Edit:
 
-`example.com`
-
-```conf
-server {
-  listen 80;
-  listen [::]:80 http2;
-  server_name example.com;
-  return 301 https://$host$request_uri;
-}
-
-server {
-  listen 443 ssl http2;
-  listen [::]:443 ssl http2;
-
-  ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
-  
-  server_name example.com;
-
-  set $base /var/www/html;
-	root $base/app;
-
-  index index.php index.html index.htm;
-
-  include common/wpfc-php.conf; #Cache FastCGI
-  include common/locations.conf;
-  include common/wpcommon.conf;  
-  include common/ssl.conf;  #Ativa o SSL no Nginx com o certificado
-}
-```
 
 Configure Cron renew:
 
@@ -171,6 +288,6 @@ $ crontab -e
 ```
 
 ```sh
-0 0 */15 * * docker-compose -f /root/docker-nginx-php7/docker-compose-ssl.yml up && docker kill -s HUP server >/dev/null 2>&1
+0 0 */15 * * docker-compose -f /path/docker-nginx-php7/docker-compose-ssl.yml up && docker kill -s HUP webserver >/dev/null 2>&1
 ```
 
