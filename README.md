@@ -79,7 +79,6 @@ The Directory `nginx/common` have all config files for Nginx
 
 The Directory `nginx/conf.d` configuration, performance and security files for the webserver and WordPress application.
 
-...
 - #### docker-nginx-php7/nginx/sites-enabled/
 
 O diretório `nginx/sites-enabled` contém os arquivos de configuração do virtual host:
@@ -154,8 +153,6 @@ server {
 
 }
 ```
-
-...
 - ##### PHP
 The directory `php` contains the archieve `php.ini` for change PHP configuration.
 
