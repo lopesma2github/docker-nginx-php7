@@ -25,7 +25,7 @@ IMPORTANTE: A porta tcp/3306 do MariaDB/MySQl não precisa ser exposta para a In
 - [Docker Compose](https://docs.docker.com/compose/)
 
 
-- ### Setup
+### Setup
 
 
 #### Docker
