@@ -6,7 +6,6 @@ Este projeto tem o objetivo de configurar um Webserver com Nginx, MariaDB e Phpm
 + 2º - MariaDB como Banco de dados
 + 3º - PhpmyAdmin para administração Web dos bancos de dados
 
-...
 ## O Desenho da estrutura
 
 ![N|Solid](docs/imgs/docker-nginx-php-mysql.drawio.jpg)
@@ -16,7 +15,6 @@ O exemplo na imagem mostra uma instância EC2 da AWS. A instância esta conectad
 
 IMPORTANTE: A porta tcp/3306 do MariaDB/MySQl não precisa ser exposta para a Internet. Logo, não é necessário inserir no Security group.
 
-...
 ## Status
 
 
@@ -83,7 +81,7 @@ The Directory `nginx/conf.d` configuration, performance and security files for t
 
 O diretório `nginx/sites-enabled` contém os arquivos de configuração do virtual host:
 
-`defualt.conf`
+`default.conf`
 ```conf
 server {
     listen   80; ## listen for ipv4; this line is default and implied
